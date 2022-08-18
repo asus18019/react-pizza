@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { changeQuantity, removeItem } from '../redux/slices/cartSlice';
 
-const CartItem = ({ id, title, price, type, quantity, imageUrl, size }) => {
+type CartItemProps = {
+	id: number,
+	title: string,
+	price: number,
+	type: string,
+	quantity: number,
+	imageUrl: string,
+	size: number
+};
+
+type ChangeQuantityInfo = {
+	id: number,
+	change: string
+}
+
+const CartItem: FC<CartItemProps> = ({ id, title, price, type, quantity, imageUrl, size }) => {
 	const dispatch = useDispatch();
 
-	const onClickChangeQuantity = (changeQuantityData) => {
+	const onClickChangeQuantity = (changeQuantityData: ChangeQuantityInfo) => {
 		dispatch(changeQuantity(changeQuantityData));
 	};
 

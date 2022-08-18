@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { ChangeEvent, useCallback, useRef, useState } from 'react';
 import debounce from 'lodash.debounce';
 import { useDispatch } from 'react-redux';
 
@@ -8,23 +8,23 @@ import { setSearchValue } from '../../redux/slices/filterSlice';
 const Search = () => {
 	const dispatch = useDispatch();
 	const [value, setValue] = useState('');
-	const inputRef = useRef();
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	const onClickClear = () => {
 		dispatch(setSearchValue(''));
 		setValue('');
-		inputRef.current.focus();
+		inputRef.current?.focus();
 	};
 
 	const updateSearchValue = useCallback(
-		debounce(str => {
+		debounce((str: string) => {
 			dispatch(setSearchValue(str));
 		}, 500),
 		[]);
 
-	const onChangeInput = (e) => {
-		setValue(e);
-		updateSearchValue(e);
+	const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+		setValue(e.target.value);
+		updateSearchValue(e.target.value);
 	};
 
 	return (
@@ -38,7 +38,7 @@ const Search = () => {
 				className={ styles.input }
 				placeholder="Поиск пиццы..."
 				value={ value }
-				onChange={ e => onChangeInput(e.target.value) }
+				onChange={ e => onChangeInput(e) }
 				ref={ inputRef }
 			/>
 			{
