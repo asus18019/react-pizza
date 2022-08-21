@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,12 +7,13 @@ import Categories from '../components/Categories';
 import Sort, { sortList } from '../components/Sort';
 import { PizzaBlock, PizzaSkeleton } from '../components/PizzaBlock';
 import { Pagination } from '../components/Pagination';
-import { selectFilters, setCurrentPage, setFilters } from '../redux/slices/filterSlice';
-import { fetchItems, selectPizzasData } from '../redux/slices/pizzasSlice';
+import { selectFilters, setCurrentPage, setFilters, SortPropertyEnum } from '../redux/slices/filterSlice';
+import { fetchItems, Pizza, selectPizzasData } from '../redux/slices/pizzasSlice';
+import { useAppDispatch } from '../redux/store';
 
 const Home: FC = () => {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const isSearch = useRef<boolean>(false);
 	const isMounted = useRef<boolean>(false);
 
@@ -25,13 +26,12 @@ const Home: FC = () => {
 		const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
 		const search = searchValue ? `&search=${ searchValue }` : '';
 
-		// @ts-ignore
 		dispatch(fetchItems({
 			category,
 			sortBy,
 			order,
 			search,
-			currentPage
+			currentPage: currentPage.toString() || '1'
 		}));
 	};
 
@@ -52,10 +52,12 @@ const Home: FC = () => {
 			const params = qs.parse(window.location.search.substring(1));
 			const sort = sortList.find(item => item.sortProperty === params.sortProperty);
 
-			dispatch(setFilters({
-				categoryId: params.categoryId,
-				currentPage: params.currentPage,
-				sort
+
+			 dispatch(setFilters({
+				categoryId: Number(params.categoryId || 0),
+				currentPage: Number(params.currentPage || 0),
+				sort: sort || sortList[0],
+				searchValue
 			}));
 			isSearch.current = true;
 		}
@@ -72,8 +74,8 @@ const Home: FC = () => {
 	}, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
 	const pizzas = items
-		.filter((pizza: any) => pizza.title.toLowerCase().includes(searchValue.toLowerCase()))
-		.map((pizza: any) => <PizzaBlock key={ pizza.id } { ...pizza } />);
+		.filter((pizza: Pizza) => pizza.title.toLowerCase().includes(searchValue.toLowerCase()))
+		.map((pizza: Pizza) => <PizzaBlock key={ pizza.id } { ...pizza } />);
 	const skeletons = [...Array(8)].map((_, index) => <PizzaSkeleton key={ index }/>);
 
 	const onChangePage = (page: number) => {

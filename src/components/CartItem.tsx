@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { changeQuantity, removeItem } from '../redux/slices/cartSlice';
+import { changeQuantity, ChangeQuantityInfo, removeItem } from '../redux/slices/cartSlice';
 
 type CartItemProps = {
 	id: number,
@@ -12,11 +12,6 @@ type CartItemProps = {
 	imageUrl: string,
 	size: number
 };
-
-type ChangeQuantityInfo = {
-	id: number,
-	change: string
-}
 
 const CartItem: FC<CartItemProps> = ({ id, title, price, type, quantity, imageUrl, size }) => {
 	const dispatch = useDispatch();
