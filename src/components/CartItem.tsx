@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { changeQuantity, ChangeQuantityInfo, removeItem } from '../redux/slices/cartSlice';
+import { changeQuantity, removeItem } from '../redux/cart/slice';
+import { ChangeQuantityInfo } from '../redux/cart/types';
 
 type CartItemProps = {
 	id: number,
@@ -40,8 +41,10 @@ const CartItem: FC<CartItemProps> = ({ id, title, price, type, quantity, imageUr
 				<p>{ type } тесто, { size } см.</p>
 			</div>
 			<div className="cart__item-count">
-				<div className="button button--outline button--circle cart__item-count-minus"
-				     onClick={ () => onClickChangeQuantity({ id, change: 'decrease' }) }>
+				<button
+					disabled={ quantity === 1 }
+					className="button button--outline button--circle cart__item-count-minus"
+					onClick={ () => onClickChangeQuantity({ id, change: 'decrease' }) }>
 					<svg width="10" height="10" viewBox="0 0 10 10" fill="none"
 					     xmlns="http://www.w3.org/2000/svg">
 						<path
@@ -52,7 +55,7 @@ const CartItem: FC<CartItemProps> = ({ id, title, price, type, quantity, imageUr
 							fill="#EB5A1E"/>
 					</svg>
 
-				</div>
+				</button>
 				<b>{ quantity }</b>
 				<div className="button button--outline button--circle cart__item-count-plus"
 				     onClick={ () => onClickChangeQuantity({ id, change: 'increase' }) }>

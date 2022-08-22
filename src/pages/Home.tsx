@@ -7,8 +7,11 @@ import Categories from '../components/Categories';
 import Sort, { sortList } from '../components/Sort';
 import { PizzaBlock, PizzaSkeleton } from '../components/PizzaBlock';
 import { Pagination } from '../components/Pagination';
-import { selectFilters, setCurrentPage, setFilters, SortPropertyEnum } from '../redux/slices/filterSlice';
-import { fetchItems, Pizza, selectPizzasData } from '../redux/slices/pizzasSlice';
+import { setCurrentPage, setFilters } from '../redux/filter/slice';
+import { selectFilters } from '../redux/filter/selectors';
+import { fetchItems } from '../redux/pizza/asyncActions';
+import { Pizza } from '../redux/pizza/types';
+import { selectPizzasData } from '../redux/pizza/selectors';
 import { useAppDispatch } from '../redux/store';
 
 const Home: FC = () => {
@@ -44,6 +47,7 @@ const Home: FC = () => {
 			});
 			navigate('?' + queryString);
 		}
+
 		isMounted.current = true;
 	}, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
@@ -53,7 +57,7 @@ const Home: FC = () => {
 			const sort = sortList.find(item => item.sortProperty === params.sortProperty);
 
 
-			 dispatch(setFilters({
+			dispatch(setFilters({
 				categoryId: Number(params.categoryId || 0),
 				currentPage: Number(params.currentPage || 0),
 				sort: sort || sortList[0],
@@ -86,7 +90,7 @@ const Home: FC = () => {
 		<div className="container">
 			<div className="content__top">
 				<Categories/>
-				<Sort/>
+				<Sort sort={ sort }/>
 			</div>
 			<h2 className="content__title">Все пиццы</h2>
 			<div className="content__items">
