@@ -1,3 +1,1 @@
-import NotFoundBlock from './NotFoundBlock';
-
-export { NotFoundBlock };
+export { default as NotFoundBlock } from './NotFoundBlock';
